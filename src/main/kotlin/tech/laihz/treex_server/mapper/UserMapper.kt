@@ -1,5 +1,6 @@
 package tech.laihz.treex_server.mapper
 
+import org.apache.ibatis.annotations.Delete
 import org.apache.ibatis.annotations.Insert
 import org.apache.ibatis.annotations.Mapper
 import org.apache.ibatis.annotations.Select
@@ -14,7 +15,13 @@ interface UserMapper {
         INSERT INTO login_user(name, password)
         VALUES (#{name}, #{password})
     """)
-    fun addUser(user:User):Int
+    fun addUser(user: User): Int
+
+    @Delete("""
+        DELETE FROM login_user
+        WHERE name = #{name}
+    """)
+    fun deleteUserByName(name:String)
 
     @Select("""
         SELECT *

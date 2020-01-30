@@ -72,5 +72,12 @@ class ResultUtil : HashMap<String, Any>() {
             r["name"] = signUpResultEnum.name
             return r
         }
+
+        fun removeUser(code: Int): R {
+            val r= R()
+            r["status"] = code
+            r["remove"] = true
+            return r
+        }
     }
 }

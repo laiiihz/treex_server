@@ -9,6 +9,7 @@ import tech.laihz.treex_server.utils.LoginResult
 import tech.laihz.treex_server.utils.R
 import tech.laihz.treex_server.utils.SignupResult
 import tech.laihz.treex_server.utils.TokenUtil
+import javax.servlet.http.HttpServletRequest
 import javax.websocket.server.PathParam
 
 @RestController
@@ -115,7 +116,6 @@ class AuthController {
         }
     }
 
-
     /**
      * @api {delete} /logout 注销登录接口
      * @apiGroup auth
@@ -132,9 +132,17 @@ class AuthController {
         return R.logoutResult(code = 200, result = true)
     }
 
-
-    @GetMapping("testnew")
-    fun testNew(user: User): Int {
-        return userService.addUser(user)
+    /**
+     * @api {delete} /treex/remove 注销账号接口
+     * @apiGroup auth
+     */
+    @DeleteMapping("/treex/remove")
+    fun authRemove(request: HttpServletRequest): R {
+        val token = request.getHeader("authorization")
+        val tokenName = TokenUtil().checkToken(token)
+        userService.deleteUserByName(tokenName)
+        jedis.del(token)
+        //TODO DELETE ALL FILES
+        return  R.removeUser(200)
     }
 }

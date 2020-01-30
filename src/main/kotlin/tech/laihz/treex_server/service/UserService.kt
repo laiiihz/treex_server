@@ -13,6 +13,10 @@ class UserService {
         return userMapper.addUser(user)
     }
 
+    fun deleteUserByName(name:String){
+        return userMapper.deleteUserByName(name)
+    }
+
     fun getUserByName(name: String): User {
         return userMapper.getUserByName(name)
     }

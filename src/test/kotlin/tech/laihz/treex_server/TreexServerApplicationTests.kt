@@ -22,7 +22,7 @@ class TreexServerApplicationTests {
     fun `sign up assertion`() {
         val response = okHttpClient.newCall(
                 Request.Builder()
-                        .url("http://127.0.0.1:8080/api/testnew?name=${testName}&password=test")
+                        .url("http://127.0.0.1:8080/api/signup?name=${testName}&password=test")
                         .build()
         ).execute()
         logger.info(response.body?.string())
