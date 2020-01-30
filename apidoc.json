@@ -1,0 +1,8 @@
+{
+  "name": "treex-server",
+  "version": "1.0.0",
+  "description": "treex-server项目API文档",
+  "title": "treex-server API",
+  "url": "http://localhost:8080/api",
+  "forceLanguage": "zh-cn"
+}
