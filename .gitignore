@@ -32,3 +32,4 @@ out/
 .vscode/
 docs/
 src/main/resources/keystore.p12
+src/main/resources/application.yaml
