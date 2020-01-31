@@ -1,11 +1,8 @@
 package tech.laihz.treex_server.utils
 
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import redis.clients.jedis.Jedis
-import tech.laihz.treex_server.entity.User
-import tech.laihz.treex_server.service.UserService
 
 @Component
 class TokenUtil {
@@ -16,7 +13,7 @@ class TokenUtil {
         return UUIDUtil().UUID
     }
 
-    fun checkToken(token: String): String {
+    fun checkToken(token: String): String? {
         return jedis.get(token)
     }
 

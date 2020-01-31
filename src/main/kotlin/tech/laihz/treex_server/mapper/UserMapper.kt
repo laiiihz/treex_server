@@ -21,7 +21,7 @@ interface UserMapper {
         DELETE FROM login_user
         WHERE name = #{name}
     """)
-    fun deleteUserByName(name:String)
+    fun deleteUserByName(name:String?)
 
     @Select("""
         SELECT *

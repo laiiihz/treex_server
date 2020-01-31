@@ -13,7 +13,7 @@ class UserService {
         return userMapper.addUser(user)
     }
 
-    fun deleteUserByName(name:String){
+    fun deleteUserByName(name:String?){
         return userMapper.deleteUserByName(name)
     }
 
