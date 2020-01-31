@@ -4,3 +4,10 @@ spring:
     username: treex
     password: treexpassword
     driver-class-name: com.mysql.cj.jdbc.Driver
+server:
+  port: 443
+  ssl:
+    key-store: classpath:keystore.p12
+    key-store-type: PKCS12
+    key-alias: KEY ALIAS
+    key-store-password: YOUR PASSWORD
