@@ -1,1 +1,1 @@
- apidoc.cmd -i src/ -o docs/
+ apidoc.cmd -t template/ -i src/ -o docs/
