@@ -10,6 +10,7 @@ class FileInit {
     companion object {
         private val logger: Logger = LoggerFactory.getLogger(FileInit::class.java)
         fun initFileFolder() {
+            logger.warn("FXXXK")
             val files: List<String> = listOf(
                     "FILESYSTEM${File.separator}${File.separator}AVATAR",
                     "FILESYSTEM${File.separator}FILES",
@@ -20,6 +21,11 @@ class FileInit {
                     File(file).mkdirs()
                 }
             }
+        }
+        fun initNamedFileFolder(name:String){
+            val file = "FILESYSTEM${File.separator}FILES${File.separator}${name}"
+            logger.warn(file)
+            File(file).mkdir()
         }
     }
 

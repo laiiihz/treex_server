@@ -11,7 +11,7 @@ class InitService {
     val logger: Logger = LoggerFactory.getLogger(InitService::class.java)
     @PostConstruct
     fun init() {
-        logger.info("""INIT PROJECT FILE""")
-        FileInit.initFile()
+        logger.info("INIT PROJECT FILE")
+        FileInit.initFileFolder()
     }
 }

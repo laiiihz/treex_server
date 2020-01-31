@@ -5,10 +5,7 @@ import org.springframework.web.bind.annotation.*
 import redis.clients.jedis.Jedis
 import tech.laihz.treex_server.entity.User
 import tech.laihz.treex_server.service.UserService
-import tech.laihz.treex_server.utils.LoginResult
-import tech.laihz.treex_server.utils.R
-import tech.laihz.treex_server.utils.SignupResult
-import tech.laihz.treex_server.utils.TokenUtil
+import tech.laihz.treex_server.utils.*
 import javax.servlet.http.HttpServletRequest
 import javax.websocket.server.PathParam
 
@@ -108,6 +105,7 @@ class AuthController {
             if (user.password.isEmpty()) {
                 R.signupResult(code = 200, signUpResultEnum = SignupResult.PASSWORD_NULL)
             } else {
+                FileInit.initNamedFileFolder(user.name)
                 userService.addUser(user)
                 R.signupResult(code = 200, signUpResultEnum = SignupResult.SUCCESS)
             }
