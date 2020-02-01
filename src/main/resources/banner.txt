@@ -7,4 +7,6 @@ ${AnsiColor.BRIGHT_CYAN}
    ╚═╝   ╚═╝  ╚═╝╚══════╝╚══════╝╚═╝  ╚═╝
 ${AnsiColor.BRIGHT_RED}
 TREEX private cloud Server
+${AnsiColor.BRIGHT_GREEN}🍃Springboot    ${AnsiColor.BLUE}Kotlin     Gradle
+
 ${AnsiColor.BLACK}
