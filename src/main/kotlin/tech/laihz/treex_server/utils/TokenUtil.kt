@@ -9,7 +9,6 @@ class TokenUtil {
     private val logger = LoggerFactory.getLogger(TokenUtil::class.java)
     private val jedis = Jedis("127.0.0.1", 6379)
     fun createToken(): String {
-        logger.warn(UUIDUtil().UUID)
         return UUIDUtil().UUID
     }
 

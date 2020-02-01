@@ -14,7 +14,6 @@ import javax.websocket.server.PathParam
 class AuthController {
     @Autowired
     lateinit var userService: UserService
-    val jedis = Jedis("127.0.0.1", 6379)
 
     /**
      * @api {get} /login 登录接口
@@ -62,7 +61,9 @@ class AuthController {
                 R.loginResult(code = 200, loginResultEnum = LoginResult.PASSWORD_WRONG)
             } else {
                 val token = TokenUtil().createToken()
+                val jedis = Jedis("127.0.0.1", 6379)
                 jedis.setex(token, ttl ?: 15 * 60 * 60 * 24, user.name) // default 15 day TTL (redis)
+                jedis.close()
                 R.loginResult(code = 200, loginResultEnum = LoginResult.SUCCESS, user = tempUser, token = token)
             }
         }
@@ -128,7 +129,9 @@ class AuthController {
      */
     @DeleteMapping("logout")
     fun authLogout(@PathParam("token") token: String): R {
+        val jedis = Jedis("127.0.0.1", 6379)
         jedis.del(token)
+        jedis.close()
         return R.logoutResult(code = 200, result = true)
     }
 
@@ -148,8 +151,11 @@ class AuthController {
         val token = request.getHeader("authorization")
         val tokenName = TokenUtil().checkToken(token)
         userService.deleteUserByName(tokenName)
+
+        val jedis = Jedis("127.0.0.1", 6379)
         jedis.del(token)
+        jedis.close()
         //TODO DELETE ALL FILES
-        return  R.removeUser(200)
+        return R.removeUser(200)
     }
 }
