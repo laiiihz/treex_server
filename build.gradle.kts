@@ -19,7 +19,9 @@ repositories {
 
 
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-web"){
+        exclude(group="org.springframework.boot" , module = "spring-boot-starter-tomcat")
+    }
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
@@ -29,6 +31,7 @@ dependencies {
     implementation("org.mybatis.spring.boot:mybatis-spring-boot-starter:2.1.1")
     implementation("mysql:mysql-connector-java")
     implementation("com.alibaba:fastjson:1.2.62")
+    implementation("org.springframework.boot:spring-boot-starter-undertow")
 
 
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
