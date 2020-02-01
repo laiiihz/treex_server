@@ -31,18 +31,23 @@ enum class FileRenameResult {
     SUCCESS,
 }
 
+
 class ResultUtil : HashMap<String, Any>() {
     companion object {
 
-        val logger: Logger = LoggerFactory.getLogger(ResultUtil::class.java)
-
-        fun loginResult(code: Int, loginResultEnum: LoginResult, user: User = User(), token: String = ""): R {
+        fun loginResult(
+                code: Int,
+                loginResultEnum: LoginResult,
+                user: User = User(),
+                token: String = ""
+        ): R {
             val r: R = R()
             r["status"] = code
             r["loginResult"] = loginResultCodeGen(loginResultEnum)
             if (loginResultEnum == LoginResult.SUCCESS) {
                 r["user"] = userGen(user)
                 r["token"] = token
+
             }
 
             return r
@@ -58,6 +63,8 @@ class ResultUtil : HashMap<String, Any>() {
         private fun userGen(user: User): R {
             val r: R = R()
             r["name"] = user.name
+            if(user.phone.isNotEmpty())r["phone"] = user.phone
+            if(user.email.isNotEmpty())r["email"] = user.email
             return r
         }
 
@@ -154,6 +161,21 @@ class ResultUtil : HashMap<String, Any>() {
             val r = R()
             r["code"] = result.ordinal
             r["name"] = result.name
+            return r
+        }
+
+        fun authPasswordResult(result:Boolean):R {
+            val r = R()
+            r["status"] = 200
+            r["password"] = result
+            return r
+        }
+
+        fun profileResult(user:User):R {
+            val r = R()
+            r["status"] =200
+            r["phone"] = user.phone
+            r["email"] = user.email
             return r
         }
     }

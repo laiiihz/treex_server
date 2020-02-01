@@ -21,4 +21,8 @@ class UserService {
         return userMapper.getUserByName(name)
     }
 
+    fun updateUserPassword(name:String,password:String){
+        return userMapper.updatePassword(name,password)
+    }
+
 }

@@ -1,9 +1,6 @@
 package tech.laihz.treex_server.mapper
 
-import org.apache.ibatis.annotations.Delete
-import org.apache.ibatis.annotations.Insert
-import org.apache.ibatis.annotations.Mapper
-import org.apache.ibatis.annotations.Select
+import org.apache.ibatis.annotations.*
 import org.springframework.stereotype.Repository
 import tech.laihz.treex_server.entity.User
 
@@ -17,11 +14,18 @@ interface UserMapper {
     """)
     fun addUser(user: User): Int
 
+    @Update("""
+        UPDATE login_user 
+        SET password = #{password}
+        WHERE name = #{name}
+    """)
+    fun updatePassword(name: String, password: String)
+
     @Delete("""
         DELETE FROM login_user
         WHERE name = #{name}
     """)
-    fun deleteUserByName(name:String?)
+    fun deleteUserByName(name: String?)
 
     @Select("""
         SELECT *

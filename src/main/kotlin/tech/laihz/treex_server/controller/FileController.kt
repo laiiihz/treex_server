@@ -6,7 +6,6 @@ import tech.laihz.treex_server.utils.FileResult
 import tech.laihz.treex_server.utils.PathUtil
 import tech.laihz.treex_server.utils.R
 import java.io.File
-import javax.servlet.http.HttpServletRequest
 
 @RestController
 @RequestMapping(value = ["/api/treex"])
@@ -101,10 +100,10 @@ class FileController {
     @GetMapping("share")
     fun shareMapping(@RequestParam("path") path: String): R {
         val prefix = PathUtil.sharedPrefix()
-        if(path.contains("..")){
-            return R.fileResultDefault(code = 200,result = FileResult.WRONG_OPERATION)
+        if (path.contains("..")) {
+            return R.fileResultDefault(code = 200, result = FileResult.WRONG_OPERATION)
         }
-        return R.fileResultDefault(code=200,prefix = prefix,path = path,result = FileResult.SUCCESS)
+        return R.fileResultDefault(code = 200, prefix = prefix, path = path, result = FileResult.SUCCESS)
     }
 
     /**
@@ -132,19 +131,27 @@ class FileController {
      * }
      *
      */
-
     @PutMapping("file/rename")
     fun fileRenameMapping(
             @RequestAttribute("name") name: String,
             @RequestParam("file") file: String,
-            @RequestParam("new") new:String
+            @RequestParam("new") new: String
     ): R {
         val tempFile = File(PathUtil.prefix(name) + file)
-        if(!tempFile.exists()){
+        if (!tempFile.exists()) {
             return R.fileRename(result = FileRenameResult.NOT_FOUND)
         }
         val parentFile = File(PathUtil.prefix(name) + file).parentFile
-        tempFile.renameTo(File(parentFile.path+File.separator+new))
+        tempFile.renameTo(File(parentFile.path + File.separator + new))
         return R.fileRename(result = FileRenameResult.SUCCESS)
+    }
+
+    /** @api {delete} /treex/file/delete 文件删除
+     * @apiGroup Files
+     * @apiParam {String} path
+     */
+    @DeleteMapping("file/delete")
+    fun deleteMapping(path: String): R {
+        return R.removeUser(code = 200)
     }
 }

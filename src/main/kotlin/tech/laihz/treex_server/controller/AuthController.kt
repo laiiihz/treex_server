@@ -17,7 +17,7 @@ class AuthController {
 
     /**
      * @api {get} /login 登录接口
-     * @apiGroup auth
+     * @apiGroup Auth
      * @apiName login port
      * @apiParam {String} name
      * @apiParam {String} password
@@ -71,7 +71,7 @@ class AuthController {
 
     /**
      * @api {put} /signup 注册接口
-     * @apiGroup auth
+     * @apiGroup Auth
      * @apiName Sign up port
      * @apiParam name
      * @apiParam password
@@ -118,7 +118,7 @@ class AuthController {
 
     /**
      * @api {delete} /logout 注销登录接口
-     * @apiGroup auth
+     * @apiGroup Auth
      * @apiName log out port
      * @apiParam {String} token
      * @apiSuccessExample {json} SuccessLogout-Response
@@ -137,7 +137,7 @@ class AuthController {
 
     /**
      * @api {delete} /treex/remove 注销账号接口
-     * @apiGroup auth
+     * @apiGroup Auth
      * @apiName remove user from Server
      * @apiParam {String} authorization
      * @apiSuccessExample {json} RESULT
@@ -157,5 +157,46 @@ class AuthController {
         jedis.close()
         //TODO DELETE ALL FILES
         return R.removeUser(200)
+    }
+
+    /**
+     * @api {get} /treex/checkPassword 验证密码有效性
+     * @apiGroup Auth
+     * @apiParam {String} password password
+     * @apiHeader {String} authorization token
+     */
+    @GetMapping("treex/checkPassword")
+    fun checkPasswordMapping(
+            @RequestParam("password") password: String,
+            @RequestAttribute("name") name: String
+    ): R {
+        val truePassword = userService.getUserByName(name).password
+        return if (truePassword == password) {
+            R.authPasswordResult(true)
+        } else {
+            R.authPasswordResult(false)
+        }
+    }
+
+    /**
+     * @api {put} /treex/password 修改密码
+     * @apiGroup Auth
+     * @apiParam {String} old old password
+     * @apiParam {String} new new password
+     * @apiHeader {String} authorization token
+     */
+    @PutMapping("treex/password")
+    fun changePasswordMapping(
+            @RequestParam("old") old: String,
+            @RequestParam("new") new:String,
+            @RequestAttribute("name") name: String
+    ): R {
+        val truePassword = userService.getUserByName(name).password
+        return if(truePassword==old){
+            userService.updateUserPassword(name,new)
+            R.authPasswordResult(result = true)
+        }else{
+            R.authPasswordResult(result = false)
+        }
     }
 }
