@@ -74,6 +74,40 @@ class FileController {
     }
 
     /**
+     * @api {get} /treex/share 获取公共文件列表
+     * @apiGroup Files
+     * @apiName Get Share File List
+     * @apiHeader {String} Authorization token
+     * @apiParam {String} path
+     * @apiSuccessExample {json} SUCCESS
+     * {
+     *  "path": ".",
+     *  "fileResult": {
+     *      "code": 1,
+     *      "name": "SUCCESS"
+     *  },
+     *  "files": [],
+     *  "status": 200
+     * }
+     * @apiSuccessExample {json} WRONG-OPERATION
+     *{
+     *  "fileResult": {
+     *      "code": 0,
+     *      "name": "WRONG_OPERATION"
+     *  },
+     *  "status": 200
+     *}
+     */
+    @GetMapping("share")
+    fun shareMapping(@RequestParam("path") path: String): R {
+        val prefix = PathUtil.sharedPrefix()
+        if(path.contains("..")){
+            return R.fileResultDefault(code = 200,result = FileResult.WRONG_OPERATION)
+        }
+        return R.fileResultDefault(code=200,prefix = prefix,path = path,result = FileResult.SUCCESS)
+    }
+
+    /**
      * @api {put} /treex/file/rename 文件重命名
      * @apiName File Rename
      * @apiGroup Files

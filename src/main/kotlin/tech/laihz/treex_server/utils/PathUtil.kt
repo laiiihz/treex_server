@@ -10,5 +10,10 @@ class PathUtil {
                     "FILES${File.separator}" +
                     "${name}${File.separator}"
         }
+        fun sharedPrefix():String{
+            return ".${File.separator}" +
+                    "FILESYSTEM${File.separator}" +
+                    "SHARE${File.separator}"
+        }
     }
 }
