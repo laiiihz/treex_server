@@ -19,7 +19,7 @@ class AuthController {
     /**
      * @api {get} /login 登录接口
      * @apiGroup auth
-     * @apiName login
+     * @apiName login port
      * @apiParam {String} name
      * @apiParam {String} password
      * @apiParam {int} ttl OPTIONAL
@@ -71,6 +71,7 @@ class AuthController {
     /**
      * @api {put} /signup 注册接口
      * @apiGroup auth
+     * @apiName Sign up port
      * @apiParam name
      * @apiParam password
      * @apiSuccessExample {json} SUCCESS
@@ -117,6 +118,7 @@ class AuthController {
     /**
      * @api {delete} /logout 注销登录接口
      * @apiGroup auth
+     * @apiName log out port
      * @apiParam {String} token
      * @apiSuccessExample {json} SuccessLogout-Response
      * {
@@ -133,6 +135,13 @@ class AuthController {
     /**
      * @api {delete} /treex/remove 注销账号接口
      * @apiGroup auth
+     * @apiName remove user from Server
+     * @apiParam {String} authorization
+     * @apiSuccessExample {json} RESULT
+     * {
+     *  "remove": true,
+     *  "status": 200
+     * }
      */
     @DeleteMapping("/treex/remove")
     fun authRemove(request: HttpServletRequest): R {

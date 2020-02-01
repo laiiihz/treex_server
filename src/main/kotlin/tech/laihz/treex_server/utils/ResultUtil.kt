@@ -21,8 +21,13 @@ enum class SignupResult {
     HAVE_USER
 }
 
-enum class FileResult{
+enum class FileResult {
     WRONG_OPERATION,
+    SUCCESS,
+}
+
+enum class FileRenameResult {
+    NOT_FOUND,
     SUCCESS,
 }
 
@@ -91,32 +96,64 @@ class ResultUtil : HashMap<String, Any>() {
             return r
         }
 
-        fun fileResultDefault(code: Int, path: String="", prefix: String="",result:FileResult): R {
+        fun fileResultDefault(code: Int, path: String = "", prefix: String = "", result: FileResult): R {
             val r = R()
             r["status"] = code
             r["fileResult"] = fileResultGen(result)
-            if(path.isNotEmpty() && prefix.isNotEmpty()){
+            if (path.isNotEmpty() && prefix.isNotEmpty()) {
+                if (!(path == "." || path == "./")) {
+                    r["parent"] = File(File(prefix + path).parentFile.path.replace(prefix, "")).invariantSeparatorsPath
+                }
                 r["path"] = path.replace(File.separator, "/")
-                r["files"] = filesList(File(prefix + path).listFiles())
+                r["files"] = filesList(File(prefix + path).listFiles(), prefix)
             }
             return r
         }
 
-        private fun fileResultGen(result:FileResult):R{
-            val r= R()
+        private fun fileResultGen(result: FileResult): R {
+            val r = R()
             r["code"] = result.ordinal
             r["name"] = result.name
             return r
         }
 
-        private fun filesList(files: Array<File>?): List<R> {
+        private fun filesList(files: Array<File>?, prefix: String): List<R> {
             val r = ArrayList<R>()
             for (file in files!!) {
                 val singleR = R()
                 singleR["name"] = file.name
+                singleR["isDir"] = file.isDirectory
+                //ONLY SUPPORT UNIX FILE MODIFIED (UNIX TIMESTAMP)
+                singleR["date"] = file.lastModified()
+                singleR["path"] = File(file.path.replace(prefix, "")).invariantSeparatorsPath
+                if (!file.isDirectory) {
+                    singleR["length"] = file.length()
+                } else {
+                    singleR["child"] = file.list()?.size ?: 0
+                }
+
                 r.add(singleR)
 
             }
+            return r
+        }
+
+        fun fileRename(result: FileRenameResult): R {
+            val r = R()
+            if (result == FileRenameResult.NOT_FOUND) {
+                r["status"] = 404
+                r["result"] = fileRenameResultGen(result)
+            } else {
+                r["status"] = 200
+                r["result"] = fileRenameResultGen(result)
+            }
+            return r
+        }
+
+        private fun fileRenameResultGen(result: FileRenameResult): R {
+            val r = R()
+            r["code"] = result.ordinal
+            r["name"] = result.name
             return r
         }
     }
