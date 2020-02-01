@@ -86,11 +86,11 @@ class ResultUtil : HashMap<String, Any>() {
             return r
         }
 
-        fun fileResultDefault(code: Int, file: File): R {
+        fun fileResultDefault(code: Int, path: String, prefix: String): R {
             val r = R()
             r["status"] = code
-            r["path"] = file.path.replace(File.separator,"/")
-            r["files"] = filesList(file.listFiles())
+            r["path"] = path.replace(File.separator, "/")
+            r["files"] = filesList(File(prefix + path).listFiles())
             return r
         }
 
