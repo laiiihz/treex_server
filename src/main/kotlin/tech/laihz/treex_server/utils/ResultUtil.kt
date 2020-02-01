@@ -21,6 +21,11 @@ enum class SignupResult {
     HAVE_USER
 }
 
+enum class FileResult{
+    WRONG_OPERATION,
+    SUCCESS,
+}
+
 class ResultUtil : HashMap<String, Any>() {
     companion object {
 
@@ -86,11 +91,21 @@ class ResultUtil : HashMap<String, Any>() {
             return r
         }
 
-        fun fileResultDefault(code: Int, path: String, prefix: String): R {
+        fun fileResultDefault(code: Int, path: String="", prefix: String="",result:FileResult): R {
             val r = R()
             r["status"] = code
-            r["path"] = path.replace(File.separator, "/")
-            r["files"] = filesList(File(prefix + path).listFiles())
+            r["fileResult"] = fileResultGen(result)
+            if(path.isNotEmpty() && prefix.isNotEmpty()){
+                r["path"] = path.replace(File.separator, "/")
+                r["files"] = filesList(File(prefix + path).listFiles())
+            }
+            return r
+        }
+
+        private fun fileResultGen(result:FileResult):R{
+            val r= R()
+            r["code"] = result.ordinal
+            r["name"] = result.name
             return r
         }
 

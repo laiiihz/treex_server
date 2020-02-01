@@ -3,7 +3,9 @@ package tech.laihz.treex_server.controller
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import tech.laihz.treex_server.utils.FileResult
 import tech.laihz.treex_server.utils.R
+import tech.laihz.treex_server.utils.ResultUtil
 import java.io.File
 import javax.servlet.http.HttpServletRequest
 
@@ -26,11 +28,14 @@ class FileController {
                 "FILESYSTEM${File.separator}" +
                 "FILES${File.separator}" +
                 "${name}${File.separator}"
-        //TODO Filter all and tow dot
+        if(path.contains("..")){
+            return R.fileResultDefault(code = 200,result = FileResult.WRONG_OPERATION)
+        }
         return R.fileResultDefault(
                 code = 200,
                 prefix = prefix,
-                path = path
+                path = path,
+                result = FileResult.SUCCESS
         )
     }
 }
