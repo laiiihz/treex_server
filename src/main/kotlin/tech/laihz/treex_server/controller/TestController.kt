@@ -10,6 +10,8 @@ import tech.laihz.treex_server.utils.R
 
 @RestController
 class TestController {
-    private val jedis = Jedis("127.0.0.1",6379)
-
+    @GetMapping("test")
+    fun testMapping(): String {
+        return "TEST SUCCESS"
+    }
 }

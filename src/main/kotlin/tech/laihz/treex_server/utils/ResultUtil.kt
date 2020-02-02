@@ -60,11 +60,13 @@ class ResultUtil : HashMap<String, Any>() {
             return r
         }
 
-        private fun userGen(user: User): R {
+        fun userGen(user: User): R {
             val r: R = R()
             r["name"] = user.name
-            if(user.phone.isNotEmpty())r["phone"] = user.phone
-            if(user.email.isNotEmpty())r["email"] = user.email
+            r["phone"] = user.phone
+            r["email"] = user.email
+            r["background"] = user.background
+            r["backgroundColor"] = user.backgroundColor
             return r
         }
 
@@ -168,14 +170,6 @@ class ResultUtil : HashMap<String, Any>() {
             val r = R()
             r["status"] = 200
             r["password"] = result
-            return r
-        }
-
-        fun profileResult(user:User):R {
-            val r = R()
-            r["status"] =200
-            r["phone"] = user.phone
-            r["email"] = user.email
             return r
         }
     }

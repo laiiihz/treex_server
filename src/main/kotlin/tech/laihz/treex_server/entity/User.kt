@@ -9,4 +9,6 @@ class User{
     var password: String = ""
     var phone: String = ""
     var email: String = ""
+    var background: String = ""
+    var backgroundColor:Int = 0x2196f3
 }

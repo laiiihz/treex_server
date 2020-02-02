@@ -10,9 +10,10 @@ class FileInit {
         private val logger: Logger = LoggerFactory.getLogger(FileInit::class.java)
         fun initFileFolder() {
             val files: List<String> = listOf(
-                    "FILESYSTEM${File.separator}${File.separator}AVATAR",
+                    "FILESYSTEM${File.separator}AVATAR",
                     "FILESYSTEM${File.separator}FILES",
-                    "FILESYSTEM${File.separator}SHARE"
+                    "FILESYSTEM${File.separator}SHARE",
+                    "FILESYSTEM${File.separator}BACKGROUND"
                     )
             for (file in files){
                 if (!File(file).exists()) {
