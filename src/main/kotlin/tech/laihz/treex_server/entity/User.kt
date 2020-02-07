@@ -5,6 +5,7 @@ import lombok.Data
 @Data
 class User{
     var id: Int = 0
+    var avatar:String = ""
     var name: String = ""
     var password: String = ""
     var phone: String = ""

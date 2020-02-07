@@ -64,6 +64,7 @@ class ResultUtil : HashMap<String, Any>() {
             val r: R = R()
             r["name"] = user.name
             r["phone"] = user.phone
+            r["avatar"] = user.avatar
             r["email"] = user.email
             r["background"] = user.background
             r["backgroundColor"] = user.backgroundColor
@@ -170,6 +171,13 @@ class ResultUtil : HashMap<String, Any>() {
             val r = R()
             r["status"] = 200
             r["password"] = result
+            return r
+        }
+
+        fun successResult():R{
+            val r = R()
+            r["status"] = 200
+            r["result"] = "SUCCESS"
             return r
         }
     }

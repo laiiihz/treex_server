@@ -1,11 +1,17 @@
 package tech.laihz.treex_server.controller
 
+import org.springframework.core.io.UrlResource
+import org.springframework.http.MediaType
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.multipart.MultipartFile
 import tech.laihz.treex_server.utils.FileRenameResult
 import tech.laihz.treex_server.utils.FileResult
 import tech.laihz.treex_server.utils.PathUtil
 import tech.laihz.treex_server.utils.R
 import java.io.File
+import java.nio.file.Files
+import java.nio.file.StandardCopyOption
 
 @RestController
 @RequestMapping(value = ["/api/treex"])
@@ -104,6 +110,33 @@ class FileController {
             return R.fileResultDefault(code = 200, result = FileResult.WRONG_OPERATION)
         }
         return R.fileResultDefault(code = 200, prefix = prefix, path = path, result = FileResult.SUCCESS)
+    }
+
+    /** @api {get} /treex/share/download 获取共享文件列表
+     * @apiGroup Files
+     *
+     */
+    @GetMapping("share/download")
+    fun shareDownloadMapping(@RequestParam("path") path: String): ResponseEntity<UrlResource> {
+        return ResponseEntity
+                .ok()
+                .contentType(MediaType.parseMediaType("application/octet-stream"))
+                .body(UrlResource(File("FILESYSTEM/SHARE/${path}").toURI()))
+    }
+
+    /**@api {post} /treex/share
+     *
+     */
+    @PostMapping("share")
+    fun postShareMapping(
+            @RequestParam("file") file: MultipartFile,
+            @RequestParam("path") path: String,
+            @RequestParam("name") name: String
+    ): R {
+        if(path.contains(".."))return R.noPermission()
+        File("FILESYSTEM/SHARE/${path}").mkdirs()
+        Files.copy(file.inputStream, File("FILESYSTEM/SHARE/${path}/${name}").toPath(), StandardCopyOption.REPLACE_EXISTING)
+        return R.successResult()
     }
 
     /**
