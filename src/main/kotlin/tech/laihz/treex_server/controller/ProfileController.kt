@@ -26,9 +26,8 @@ class ProfileController {
      * @apiGroup Profile
      */
     @GetMapping("profile")
-    fun profileMapping(@RequestHeader("Authorization") token: String): R {
-        val jedis = Jedis("127.0.0.1", 6379)
-        val user = userService.getUserByName(jedis.get(token))
+    fun profileMapping(@RequestHeader("Authorization") token: String,@RequestAttribute("name") name:String): R {
+        val user = userService.getUserByName(name)
         return R.userGen(user)
     }
 

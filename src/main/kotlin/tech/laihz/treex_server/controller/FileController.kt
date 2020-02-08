@@ -1,5 +1,7 @@
 package tech.laihz.treex_server.controller
 
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.core.io.UrlResource
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -17,6 +19,8 @@ import java.nio.file.StandardCopyOption
 @RequestMapping(value = ["/api/treex"])
 
 class FileController {
+    val logger:Logger= LoggerFactory.getLogger(FileController::class.java)
+
     /**
      * @api {get} /treex/file 获取文件列表
      * @apiGroup Files
@@ -112,7 +116,7 @@ class FileController {
         return R.fileResultDefault(code = 200, prefix = prefix, path = path, result = FileResult.SUCCESS)
     }
 
-    /** @api {get} /treex/share/download 获取共享文件列表
+    /** @api {get} /treex/share/download 下载共享文件
      * @apiGroup Files
      *
      */
@@ -124,6 +128,17 @@ class FileController {
                 .body(UrlResource(File("FILESYSTEM/SHARE/${path}").toURI()))
     }
 
+    /**
+     * @api {get} /treex/file/download 下载私有文件
+     * @apiGroup Files
+     */
+    @GetMapping("file/download")
+    fun privateDownloadMapping(@RequestAttribute("name") name: String,@RequestParam("path")path:String):ResponseEntity<UrlResource> {
+        return ResponseEntity
+                .ok()
+                .contentType(MediaType.parseMediaType("application/octet-stream"))
+                .body(UrlResource(File("FILESYSTEM/FILES/${name}/${path}").toURI()))
+    }
     /**@api {post} /treex/share
      *
      */
@@ -133,7 +148,7 @@ class FileController {
             @RequestParam("path") path: String,
             @RequestParam("name") name: String
     ): R {
-        if(path.contains(".."))return R.noPermission()
+        if (path.contains("..")) return R.noPermission()
         File("FILESYSTEM/SHARE/${path}").mkdirs()
         Files.copy(file.inputStream, File("FILESYSTEM/SHARE/${path}/${name}").toPath(), StandardCopyOption.REPLACE_EXISTING)
         return R.successResult()
