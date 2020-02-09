@@ -130,6 +130,7 @@ class FileController {
 
     /**
      * @api {get} /treex/file/download 下载私有文件
+     * @apiName down private file
      * @apiGroup Files
      */
     @GetMapping("file/download")
@@ -139,8 +140,11 @@ class FileController {
                 .contentType(MediaType.parseMediaType("application/octet-stream"))
                 .body(UrlResource(File("FILESYSTEM/FILES/${name}/${path}").toURI()))
     }
-    /**@api {post} /treex/share
-     *
+    /**
+     * @api {post} /treex/share 上传共享文件
+     * @apiVersion 1.0.0
+     * @apiName upload shred file
+     * @apiGroup Files
      */
     @PostMapping("share")
     fun postShareMapping(
@@ -194,12 +198,14 @@ class FileController {
         return R.fileRename(result = FileRenameResult.SUCCESS)
     }
 
-    /** @api {delete} /treex/file/delete 文件删除
+    /** @api {delete} /treex/file/delete 文件删除(移动到回收站)
      * @apiGroup Files
      * @apiParam {String} path
      */
     @DeleteMapping("file/delete")
-    fun deleteMapping(path: String): R {
-        return R.removeUser(code = 200)
+    fun deleteMapping(@RequestParam("path") path: String,@RequestAttribute("name") name:String): String {
+        val tempFile = File(PathUtil.prefix(name) + path)
+        logger
+        return tempFile.path
     }
 }

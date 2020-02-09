@@ -2,6 +2,9 @@ package tech.laihz.treex_server.filter
 
 import com.alibaba.fastjson.JSON
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.redis.core.StringRedisTemplate
+import org.springframework.stereotype.Component
 import tech.laihz.treex_server.utils.R
 import tech.laihz.treex_server.utils.TokenUtil
 import javax.servlet.*
@@ -10,7 +13,10 @@ import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 @WebFilter(filterName = "AuthFilter" , urlPatterns =["/api/treex/*"])
+@Component
 class AuthFilter : Filter {
+    @Autowired
+    lateinit var stringRedisTemplate: StringRedisTemplate
     private val logger = LoggerFactory.getLogger(AuthFilter::class.java)
     override fun init(filterConfig: FilterConfig?) {
         super.init(filterConfig)
@@ -31,7 +37,7 @@ class AuthFilter : Filter {
                 res.writer.write(JSON.toJSONString(r))
                 return
             }
-            val nameInJedis:String? = TokenUtil().checkToken(token)
+            val nameInJedis:String? = stringRedisTemplate.opsForValue().get(token)
             if(nameInJedis==null){
                 val r = R.noPermission()
                 res.writer.write(JSON.toJSONString(r))
