@@ -68,13 +68,13 @@ class AuthController {
             }
         }
     }
-
     /**
      * @api {put} /signup 注册接口
+     * @apiVersion 1.0.0
      * @apiGroup Auth
-     * @apiName Sign up port
-     * @apiParam name
-     * @apiParam password
+     * @apiName Sign up api
+     * @apiParam {String} name 用户名
+     * @apiParam {String} password 密码,建议在客户端二次验证
      * @apiSuccessExample {json} SUCCESS
      * {
      *  "signupResult":{
