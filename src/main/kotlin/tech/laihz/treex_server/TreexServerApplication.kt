@@ -6,7 +6,7 @@ import org.springframework.boot.web.servlet.ServletComponentScan
 import javax.annotation.PostConstruct
 
 @SpringBootApplication
-@ServletComponentScan(basePackages = ["tech.laihz.treex_server.filter"])
+@ServletComponentScan
 class TreexServerApplication
 
 fun main(args: Array<String>) {

@@ -1,7 +1,5 @@
 package tech.laihz.treex_server.utils
 
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import tech.laihz.treex_server.entity.User
 import java.io.File
 import kotlin.collections.HashMap
@@ -178,6 +176,13 @@ class ResultUtil : HashMap<String, Any>() {
             val r = R()
             r["status"] = 200
             r["result"] = "SUCCESS"
+            return r
+        }
+
+        fun failResult():R{
+            val r = R()
+            r["status"] = 0
+            r["result"] = "FAIL"
             return r
         }
     }

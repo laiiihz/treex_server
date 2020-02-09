@@ -19,7 +19,7 @@ import java.nio.file.StandardCopyOption
 @RequestMapping(value = ["/api/treex"])
 
 class FileController {
-    val logger:Logger= LoggerFactory.getLogger(FileController::class.java)
+    val logger: Logger = LoggerFactory.getLogger(FileController::class.java)
 
     /**
      * @api {get} /treex/file 获取文件列表
@@ -134,12 +134,13 @@ class FileController {
      * @apiGroup Files
      */
     @GetMapping("file/download")
-    fun privateDownloadMapping(@RequestAttribute("name") name: String,@RequestParam("path")path:String):ResponseEntity<UrlResource> {
+    fun privateDownloadMapping(@RequestAttribute("name") name: String, @RequestParam("path") path: String): ResponseEntity<UrlResource> {
         return ResponseEntity
                 .ok()
                 .contentType(MediaType.parseMediaType("application/octet-stream"))
                 .body(UrlResource(File("FILESYSTEM/FILES/${name}/${path}").toURI()))
     }
+
     /**
      * @api {post} /treex/share 上传共享文件
      * @apiVersion 1.0.0
@@ -194,18 +195,41 @@ class FileController {
             return R.fileRename(result = FileRenameResult.NOT_FOUND)
         }
         val parentFile = File(PathUtil.prefix(name) + file).parentFile
-        tempFile.renameTo(File(parentFile.path + File.separator + new))
+        Files.move(tempFile.toPath(), File(parentFile.path + File.separator + new).toPath(), StandardCopyOption.ATOMIC_MOVE)
         return R.fileRename(result = FileRenameResult.SUCCESS)
     }
 
-    /** @api {delete} /treex/file/delete 文件删除(移动到回收站)
+    /**
+     * @api {delete} /treex/file/delete 文件删除(移动到回收站)
+     * @apiVersion 1.0.0
+     * @apiName delete file
      * @apiGroup Files
-     * @apiParam {String} path
+     * @apiParam {String} path 文件路径
+     * @apiHeader {String} authorization token
      */
     @DeleteMapping("file/delete")
-    fun deleteMapping(@RequestParam("path") path: String,@RequestAttribute("name") name:String): String {
+    fun deleteMapping(@RequestParam("path") path: String, @RequestAttribute("name") name: String): R {
         val tempFile = File(PathUtil.prefix(name) + path)
-        logger
-        return tempFile.path
+        val tempFileBin = File(PathUtil.prefixBin(name) + path)
+        Files.move(tempFile.toPath(), tempFileBin.toPath(), StandardCopyOption.ATOMIC_MOVE)
+        return R.successResult()
+    }
+
+    /**
+     * @api {delete} /treex/file/clear 清空回收站
+     * @apiVersion 1.0.0
+     * @apiName clear recycle bin
+     * @apiGroup Files
+     * @apiHeader {String} authorization token
+     */
+    @DeleteMapping("/file/clear")
+    fun clearRBMapping(@RequestAttribute("name") name: String): R {
+        Files.walk(File(PathUtil.prefixBin(name)).toPath())
+                .sorted(Comparator.reverseOrder())
+                .forEach{
+                    it.toFile().delete()
+                }
+        Files.createDirectory(File(PathUtil.prefixBin(name)).toPath())
+        return R.successResult()
     }
 }

@@ -14,16 +14,23 @@ class FileInit {
                     "FILESYSTEM${File.separator}FILES",
                     "FILESYSTEM${File.separator}SHARE",
                     "FILESYSTEM${File.separator}BACKGROUND"
-                    )
-            for (file in files){
+            )
+            for (file in files) {
                 if (!File(file).exists()) {
                     File(file).mkdirs()
                 }
             }
         }
-        fun initNamedFileFolder(name:String){
+
+        fun initNamedFileFolder(name: String) {
             val file = "FILESYSTEM${File.separator}FILES${File.separator}${name}"
-            File(file).mkdir()
+            val fileBin = "FILESYSTEM${File.separator}FILES${File.separator}${name}.bin"
+            if (!File(file).exists()) {
+                File(file).mkdirs()
+            }
+            if (!File(fileBin).exists()) {
+                File(fileBin).mkdirs()
+            }
         }
     }
 

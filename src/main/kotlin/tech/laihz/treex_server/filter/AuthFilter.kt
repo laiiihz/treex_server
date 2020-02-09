@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 @WebFilter(filterName = "AuthFilter" , urlPatterns =["/api/treex/*"])
-@Component
 class AuthFilter : Filter {
     @Autowired
     lateinit var stringRedisTemplate: StringRedisTemplate

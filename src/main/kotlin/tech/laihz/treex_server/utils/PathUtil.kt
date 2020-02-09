@@ -10,6 +10,12 @@ class PathUtil {
                     "FILES${File.separator}" +
                     "${name}${File.separator}"
         }
+        fun prefixBin(name: String): String {
+            return ".${File.separator}" +
+                    "FILESYSTEM${File.separator}" +
+                    "FILES${File.separator}" +
+                    "${name}.bin${File.separator}"
+        }
         fun sharedPrefix():String{
             return ".${File.separator}" +
                     "FILESYSTEM${File.separator}" +
