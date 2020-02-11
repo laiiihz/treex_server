@@ -192,15 +192,25 @@ class FileController {
     fun fileRenameMapping(
             @RequestAttribute("name") name: String,
             @RequestParam("file") file: String,
-            @RequestParam("new") new: String
+            @RequestParam("new") new: String,
+            @RequestParam("share") share: Boolean
     ): R {
         val tempFile = File(PathUtil.prefix(name) + file)
-        if (!tempFile.exists()) {
-            return R.fileRename(result = FileRenameResult.NOT_FOUND)
+        val shareFile = File(PathUtil.sharedPrefix() + file)
+        if (share) {
+            if (!shareFile.exists()) return R.fileRename(result = FileRenameResult.NOT_FOUND)
+            val parentFile = shareFile.parentFile
+            Files.move(shareFile.toPath(), File(parentFile.path + File.separator + new).toPath(), StandardCopyOption.ATOMIC_MOVE)
+            return R.fileRename(result = FileRenameResult.SUCCESS)
+        } else {
+            when (!tempFile.exists()) {
+                true -> return R.fileRename(result = FileRenameResult.NOT_FOUND)
+            }
+            val parentFile = tempFile.parentFile
+            Files.move(tempFile.toPath(), File(parentFile.path + File.separator + new).toPath(), StandardCopyOption.ATOMIC_MOVE)
+            return R.fileRename(result = FileRenameResult.SUCCESS)
         }
-        val parentFile = File(PathUtil.prefix(name) + file).parentFile
-        Files.move(tempFile.toPath(), File(parentFile.path + File.separator + new).toPath(), StandardCopyOption.ATOMIC_MOVE)
-        return R.fileRename(result = FileRenameResult.SUCCESS)
+
     }
 
     /**
@@ -215,11 +225,11 @@ class FileController {
     @PutMapping("file/newFolder")
     fun newFolderMapping(
             @RequestParam("path") path: String,
-            @RequestParam("folder") folder:String,
-            @RequestParam("share") share:Boolean,
+            @RequestParam("folder") folder: String,
+            @RequestParam("share") share: Boolean,
             @RequestAttribute("name") name: String
 
-    ):R {
+    ): R {
         Files.createDirectories(File(
                 "${PathUtil.prefix(name)}${File.separator}${path}${File.separator}${folder}"
         ).toPath())
