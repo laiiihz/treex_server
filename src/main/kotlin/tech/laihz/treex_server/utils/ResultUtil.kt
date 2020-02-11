@@ -2,6 +2,7 @@ package tech.laihz.treex_server.utils
 
 import tech.laihz.treex_server.entity.User
 import java.io.File
+import java.nio.file.Files
 import kotlin.collections.HashMap
 
 typealias R = ResultUtil
@@ -118,6 +119,20 @@ class ResultUtil : HashMap<String, Any>() {
             return r
         }
 
+        fun recycleBinResult(path:String):R{
+            val r= R()
+            r["status"]= 200
+            val recycleList = ArrayList<File>()
+            var count =0
+            Files.walk(File(path).toPath()).forEach {
+                count++
+                if(count!=1)//remove the top
+                recycleList.add(it.toFile())
+            }
+            r["recycleFiles"] = recycleBinList(files =recycleList,prefix = path)
+            return r
+        }
+
         private fun fileResultGen(result: FileResult): R {
             val r = R()
             r["code"] = result.ordinal
@@ -142,6 +157,16 @@ class ResultUtil : HashMap<String, Any>() {
 
                 r.add(singleR)
 
+            }
+            return r
+        }
+        private fun recycleBinList(files: ArrayList<File>, prefix: String): List<R> {
+            val r = ArrayList<R>()
+            for (file in files) {
+                val rSingle = R()
+                rSingle["name"] = file.name
+                rSingle["path"] = File(file.path.replace(prefix,"./")).invariantSeparatorsPath
+                r.add(rSingle)
             }
             return r
         }

@@ -277,10 +277,9 @@ class FileController {
      * @apiName recycle bin
      * @apiGroup Files
      */
-    @GetMapping("recycle")
+    @GetMapping("file/recycle")
     fun recycleMapping(@RequestAttribute("name") name: String): R {
-
-        return R.successResult()
+        return R.recycleBinResult(PathUtil.prefixBin(name))
     }
 
     /** @api {put} /treex/file/recovery 文件恢复(从回收站恢复文件)
