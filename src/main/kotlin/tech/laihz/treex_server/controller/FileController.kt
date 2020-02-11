@@ -7,6 +7,7 @@ import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
+import tech.laihz.treex_server.entity.FileType
 import tech.laihz.treex_server.utils.FileRenameResult
 import tech.laihz.treex_server.utils.FileResult
 import tech.laihz.treex_server.utils.PathUtil
@@ -146,6 +147,9 @@ class FileController {
      * @apiVersion 1.0.0
      * @apiName upload shred file
      * @apiGroup Files
+     * @apiParam {String} file
+     * @apiParam {String} path
+     * @apiParam {String} name
      */
     @PostMapping("share")
     fun postShareMapping(
@@ -200,6 +204,29 @@ class FileController {
     }
 
     /**
+     * @api {put} /treex/file/newFolder 新建文件夹
+     * @apiVersion 1.0.0
+     * @apiGroup Files
+     * @apiName new folder
+     * @apiHeader {String} authorization token
+     * @apiParam {String} path
+     * @apiParam {String} folder
+     */
+    @PutMapping("file/newFolder")
+    fun newFolderMapping(
+            @RequestParam("path") path: String,
+            @RequestParam("folder") folder:String,
+            @RequestParam("share") share:Boolean,
+            @RequestAttribute("name") name: String
+
+    ):R {
+        Files.createDirectories(File(
+                "${PathUtil.prefix(name)}${File.separator}${path}${File.separator}${folder}"
+        ).toPath())
+        return R.successResult()
+    }
+
+    /**
      * @api {delete} /treex/file/delete 文件删除(移动到回收站)
      * @apiVersion 1.0.0
      * @apiName delete file
@@ -216,20 +243,77 @@ class FileController {
     }
 
     /**
+     * @api {get} /treex/file/recycle 回收站
+     * @apiVersion 1.0.0
+     * @apiName recycle bin
+     * @apiGroup Files
+     */
+    @GetMapping("recycle")
+    fun recycleMapping(@RequestAttribute("name") name: String): R {
+
+        return R.successResult()
+    }
+
+    /** @api {put} /treex/file/recovery 文件恢复(从回收站恢复文件)
+     * @apiVersion 1.0.0
+     * @apiGroup Files
+     * @apiHeader {String} authorization token
+     * @apiParam {String} path 恢复路径
+     *
+     */
+    @PutMapping("file/recovery")
+    fun recoveryMapping(@RequestParam("path") path: String, @RequestAttribute("name") name: String): R {
+
+        return R.successResult()
+    }
+
+    /**
      * @api {delete} /treex/file/clear 清空回收站
      * @apiVersion 1.0.0
      * @apiName clear recycle bin
      * @apiGroup Files
      * @apiHeader {String} authorization token
      */
-    @DeleteMapping("/file/clear")
+    @DeleteMapping("file/clear")
     fun clearRBMapping(@RequestAttribute("name") name: String): R {
         Files.walk(File(PathUtil.prefixBin(name)).toPath())
                 .sorted(Comparator.reverseOrder())
-                .forEach{
+                .forEach {
                     it.toFile().delete()
                 }
         Files.createDirectory(File(PathUtil.prefixBin(name)).toPath())
         return R.successResult()
     }
+
+    /**
+     * @api {get} /treex/file/type 文件分类
+     * @apiVersion 1.0.0
+     * @apiName count all typed files
+     * @apiGroup Files
+     * @apiHeader {String} authorization token
+     * @apiIgnore TODO
+     */
+    @GetMapping("file/typeCount")
+    fun fileTypedMapping(@RequestAttribute("name") name: String): R {
+        val type: FileType = FileType()
+        Files.walk(File(PathUtil.prefix(name)).toPath()).forEach {
+            val index = it.toFile().name.lastIndexOf(".")
+            val nowFile = it.toFile()
+            if (index != -1) {
+            }
+            when (nowFile.name.substring(index + 1)) {
+                "jpg", "png", "jpeg" -> type.media.photo.add(nowFile)
+                "mp4", "mkv", "mov" -> type.media.video.add(nowFile)
+                "mp3", "aac" -> type.media.music.add(nowFile)
+                "doc", "docx" -> type.document.doc.add(nowFile)
+                "xls", "xlsx" -> type.document.excel.add(nowFile)
+                "ppt", "pptx" -> type.document.powerPoint.add(nowFile)
+            }
+        }
+
+        val r = R()
+        r["types"] = type
+        return r
+    }
+
 }

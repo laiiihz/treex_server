@@ -165,24 +165,34 @@ class ResultUtil : HashMap<String, Any>() {
             return r
         }
 
-        fun authPasswordResult(result:Boolean):R {
+        fun authPasswordResult(result: Boolean): R {
             val r = R()
             r["status"] = 200
             r["password"] = result
             return r
         }
 
-        fun successResult():R{
+        fun successResult(): R {
             val r = R()
             r["status"] = 200
             r["result"] = "SUCCESS"
             return r
         }
 
-        fun failResult():R{
+        fun failResult(): R {
             val r = R()
             r["status"] = 0
             r["result"] = "FAIL"
+            return r
+        }
+
+        fun typedResult(photo: Int, video: Int, music: Int,docs:Int ):R {
+            val r= R()
+            r["photo"] = photo
+            r["video"] = video
+            r["music"] = music
+            r["docs"] = docs
+            r["status"] = 200
             return r
         }
     }

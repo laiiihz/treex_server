@@ -21,14 +21,22 @@ class ProfileController {
 
     /**
      * @api {get} /treex/profile 获取用户信息
+     * @apiVersion 1.0.0
      * @apiGroup Profile
+     * @apiHeader {String} authorization token
      */
     @GetMapping("profile")
-    fun profileMapping(@RequestHeader("Authorization") token: String,@RequestAttribute("name") name:String): R {
+    fun profileMapping(@RequestAttribute("name") name:String): R {
         val user = userService.getUserByName(name)
         return R.userGen(user)
     }
 
+    /**
+     * @api {get} /treex/profile/avatar 获取头像(文件)
+     * @apiVersion 1.0.0
+     * @apiGroup Profile
+     * @apiHeader {String} authorization token
+     */
     @GetMapping("profile/avatar")
     fun avatarMapping(): ResponseEntity<UrlResource> {
         return ResponseEntity
@@ -37,6 +45,11 @@ class ProfileController {
                 .body(UrlResource(File("FILESYSTEM/AVATAR/1.jpg").toURI()))
     }
 
+    /**
+     * @api {get} /treex/profile/background 获取背景(文件)
+     * @apiVersion 1.0.0
+     * @apiGroup Profile
+     */
     @GetMapping("profile/background")
     fun backgroundMapping(): ResponseEntity<UrlResource> {
         return ResponseEntity
@@ -47,6 +60,7 @@ class ProfileController {
 
     /**
      * @api {put} /treex/profile-color 设置用户界面背景
+     * @apiVersion 1.0.0
      * @apiGroup Profile
      */
     @PutMapping("profile/background-color")
