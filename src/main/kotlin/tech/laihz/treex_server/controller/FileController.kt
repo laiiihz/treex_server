@@ -117,6 +117,22 @@ class FileController {
         return R.fileResultDefault(code = 200, prefix = prefix, path = path, result = FileResult.SUCCESS)
     }
 
+    /**
+     * @api {delete} /treex/share 删除公共文件
+     * @apiVersion 1.0.0
+     * @apiName delete shared file
+     * @apiGroup Files
+     */
+    @DeleteMapping("share")
+    fun deleteShareMapping(@RequestParam("path") path: String): R {
+        Files.walk(File(PathUtil.sharedPrefix()+path).toPath())
+                .sorted(Comparator.reverseOrder())
+                .forEach {
+                    it.toFile().delete()
+                }
+        return R.successResult()
+    }
+
     /** @api {get} /treex/share/download 下载共享文件
      * @apiGroup Files
      *
@@ -237,15 +253,18 @@ class FileController {
     }
 
     /**
-     * @api {delete} /treex/file/delete 文件删除(移动到回收站)
+     * @api {delete} /treex/file 文件删除(移动到回收站)
      * @apiVersion 1.0.0
      * @apiName delete file
      * @apiGroup Files
      * @apiParam {String} path 文件路径
      * @apiHeader {String} authorization token
      */
-    @DeleteMapping("file/delete")
-    fun deleteMapping(@RequestParam("path") path: String, @RequestAttribute("name") name: String): R {
+    @DeleteMapping("file")
+    fun deleteMapping(
+            @RequestParam("path") path: String,
+            @RequestAttribute("name") name: String
+    ): R {
         val tempFile = File(PathUtil.prefix(name) + path)
         val tempFileBin = File(PathUtil.prefixBin(name) + path)
         Files.move(tempFile.toPath(), tempFileBin.toPath(), StandardCopyOption.ATOMIC_MOVE)
