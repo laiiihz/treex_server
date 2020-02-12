@@ -125,7 +125,7 @@ class FileController {
      */
     @DeleteMapping("share")
     fun deleteShareMapping(@RequestParam("path") path: String): R {
-        Files.walk(File(PathUtil.sharedPrefix()+path).toPath())
+        Files.walk(File(PathUtil.sharedPrefix() + path).toPath())
                 .sorted(Comparator.reverseOrder())
                 .forEach {
                     it.toFile().delete()
@@ -342,6 +342,30 @@ class FileController {
         val r = R()
         r["types"] = type
         return r
+    }
+
+    /**
+     * @api {get} /treex/file/search 文件搜索
+     * @apiVersion 1.0.0
+     * @apiName Search File In Files
+     * @apiGroup Files
+     * @apiHeader {String} authorization token
+     * @apiParam {String} query
+     */
+    @GetMapping("file/search")
+    fun searchMapping(
+            @RequestParam("query") query: String,
+            @RequestAttribute("name") name: String
+    ): R {
+        val prefix = PathUtil.prefix(name)
+        val files = ArrayList<File>()
+        Files.walk(File(prefix).toPath()).forEach {
+            val tempFile = it.toFile()
+            if (tempFile.path.contains(query)) {
+                files.add(tempFile)
+            }
+        }
+        return R.searchResult(files = files, prefix = prefix)
     }
 
 }

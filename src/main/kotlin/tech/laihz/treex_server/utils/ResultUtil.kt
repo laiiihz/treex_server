@@ -133,6 +133,25 @@ class ResultUtil : HashMap<String, Any>() {
             return r
         }
 
+        fun searchResult(files:ArrayList<File>,prefix: String):R{
+            val r = R()
+            val rList =ArrayList<R>()
+            r["status"] = 200
+            for (item in files){
+                val rSingle = R()
+                rSingle["name"] = item.name
+                rSingle["path"] = File(item.path.replace(prefix, "./")).invariantSeparatorsPath
+                rSingle["isDir"] = item.isDirectory
+                rSingle["date"] = item.lastModified()
+                if(!item.isDirectory){
+                    rSingle["length"] = item.length()
+                }
+                rList.add(rSingle)
+            }
+            r["search"] = rList
+            return r
+        }
+
         private fun fileResultGen(result: FileResult): R {
             val r = R()
             r["code"] = result.ordinal
