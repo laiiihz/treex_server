@@ -159,7 +159,7 @@ class FileController {
     }
 
     /**
-     * @api {post} /treex/share 上传共享文件
+     * @api {post} /treex/share 上传共享文件(单个小文件)
      * @apiVersion 1.0.0
      * @apiName upload shred file
      * @apiGroup Files
@@ -176,6 +176,31 @@ class FileController {
         if (path.contains("..")) return R.noPermission()
         File("FILESYSTEM/SHARE/${path}").mkdirs()
         Files.copy(file.inputStream, File("FILESYSTEM/SHARE/${path}/${name}").toPath(), StandardCopyOption.REPLACE_EXISTING)
+        return R.successResult()
+    }
+
+    /**
+     * @api {post} /treex/file 上传私有文件(单个小文件)
+     * @apiVersion 1.0.0
+     * @apiGroup Files TabNine::config
+     * @apiHeader {String} authorization token
+     * @apiParam {MultipartFile} file
+     * @apiParam {String} file
+     * @apiParam {String} path
+     */
+    @PostMapping("file")
+    fun postFileMapping(
+            @RequestParam("path") path: String,
+            @RequestParam("file") file: MultipartFile,
+            @RequestParam("name") fileName: String,
+            @RequestAttribute("name") name: String
+    ): R {
+        if (path.contains("..")) return R.noPermission()
+        File(PathUtil.prefix(name) + path).mkdirs()
+        Files.copy(file.inputStream, File(
+                PathUtil.prefix(name) + path + File.separator + fileName).toPath(),
+                StandardCopyOption.REPLACE_EXISTING
+        )
         return R.successResult()
     }
 
