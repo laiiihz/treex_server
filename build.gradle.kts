@@ -33,7 +33,9 @@ dependencies {
     implementation("mysql:mysql-connector-java")
     implementation("com.alibaba:fastjson:1.2.62")
     implementation("org.springframework.boot:spring-boot-starter-undertow")
-
+    implementation("org.springframework.boot:spring-boot-starter-websocket"){
+        exclude(group="org.springframework.boot" , module = "spring-boot-starter-tomcat")
+    }
 
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
