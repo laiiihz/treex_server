@@ -25,6 +25,7 @@ class FileController {
     /**
      * @api {get} /treex/file 获取文件列表
      * @apiGroup Files
+     * @apiVersion 1.0.0
      * @apiName Get File List
      * @apiHeader {String} Authorization token
      * @apiParam {String} path
@@ -85,6 +86,7 @@ class FileController {
 
     /**
      * @api {get} /treex/share 获取公共文件列表
+     * @apiVersion 1.0.0
      * @apiGroup Files
      * @apiName Get Share File List
      * @apiHeader {String} Authorization token
@@ -134,6 +136,9 @@ class FileController {
     }
 
     /** @api {get} /treex/share/download 下载共享文件
+     * @apiVersion 1.0.0
+     * @apiName download shared file
+     * @apiParam {String} path
      * @apiGroup Files
      *
      */
@@ -147,11 +152,17 @@ class FileController {
 
     /**
      * @api {get} /treex/file/download 下载私有文件
+     * @apiVersion 1.0.0
      * @apiName down private file
      * @apiGroup Files
+     * @apiParam {String} path file
+     * @apiHeader {String} authorization token
      */
     @GetMapping("file/download")
-    fun privateDownloadMapping(@RequestAttribute("name") name: String, @RequestParam("path") path: String): ResponseEntity<UrlResource> {
+    fun privateDownloadMapping(
+            @RequestAttribute("name") name: String,
+            @RequestParam("path") path: String
+    ): ResponseEntity<UrlResource> {
         return ResponseEntity
                 .ok()
                 .contentType(MediaType.parseMediaType("application/octet-stream"))
@@ -163,7 +174,7 @@ class FileController {
      * @apiVersion 1.0.0
      * @apiName upload shred file
      * @apiGroup Files
-     * @apiParam {String} file
+     * @apiParam {MultipartFile} file
      * @apiParam {String} path
      * @apiParam {String} name
      */
@@ -182,7 +193,7 @@ class FileController {
     /**
      * @api {post} /treex/file 上传私有文件(单个小文件)
      * @apiVersion 1.0.0
-     * @apiGroup Files TabNine::config
+     * @apiGroup Files
      * @apiHeader {String} authorization token
      * @apiParam {MultipartFile} file
      * @apiParam {String} file
@@ -206,6 +217,7 @@ class FileController {
 
     /**
      * @api {put} /treex/file/rename 文件重命名
+     * @apiVersion 1.0.0
      * @apiName File Rename
      * @apiGroup Files
      * @apiHeader {String} Authorization token
@@ -262,6 +274,7 @@ class FileController {
      * @apiHeader {String} authorization token
      * @apiParam {String} path
      * @apiParam {String} folder
+     * @apiParam {Boolean} share
      */
     @PutMapping("file/newFolder")
     fun newFolderMapping(
@@ -271,8 +284,9 @@ class FileController {
             @RequestAttribute("name") name: String
 
     ): R {
+        val prefixPath = if (share) PathUtil.sharedPrefix() else PathUtil.prefix(name)
         Files.createDirectories(File(
-                "${PathUtil.prefix(name)}${File.separator}${path}${File.separator}${folder}"
+                "${prefixPath}${File.separator}${path}${File.separator}${folder}"
         ).toPath())
         return R.successResult()
     }
@@ -380,9 +394,12 @@ class FileController {
     @GetMapping("file/search")
     fun searchMapping(
             @RequestParam("query") query: String,
+            @RequestParam("share") share: Boolean,
             @RequestAttribute("name") name: String
     ): R {
-        val prefix = PathUtil.prefix(name)
+        val prefix =
+                if (share)PathUtil.sharedPrefix()
+                else  PathUtil.prefix(name)
         val files = ArrayList<File>()
         Files.walk(File(prefix).toPath()).forEach {
             val tempFile = it.toFile()

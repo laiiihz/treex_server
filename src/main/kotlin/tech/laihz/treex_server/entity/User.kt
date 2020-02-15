@@ -1,8 +1,6 @@
 package tech.laihz.treex_server.entity
 
-import lombok.Data
 
-@Data
 class User{
     var id: Int = 0
     var avatar:String = ""
