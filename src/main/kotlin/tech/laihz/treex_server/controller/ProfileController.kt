@@ -67,4 +67,36 @@ class ProfileController {
     fun backgroundMapping(@RequestParam("color") color: Int): Int {
         return color
     }
+
+    /**
+     * @api {put} /treex/profile/phone 设置手机号码
+     * @apiVersion 1.0.0
+     * @apiGroup Profile
+     * @apiHeader {String} authorization token
+     * @apiParam {String} phone
+     */
+    @PutMapping("profile/phone")
+    fun phoneMapping(
+            @RequestParam("phone") phone: String,
+            @RequestAttribute("name") name: String
+    ): R {
+        userService.updateUserPhone(name,phone)
+        return R.successResult()
+    }
+
+    /**
+     * @api {put} /treex/profile/email 设置邮箱
+     * @apiVersion 1.0.0
+     * @apiGroup Profile
+     * @apiHeader {String} authorization token
+     * @apiParam {String} email
+     */
+    @PutMapping("profile/email")
+    fun emailMapping(
+            @RequestParam("email") email: String,
+            @RequestAttribute("name") name: String
+    ):R{
+        userService.updateUserEmail(name,email)
+        return R.successResult()
+    }
 }

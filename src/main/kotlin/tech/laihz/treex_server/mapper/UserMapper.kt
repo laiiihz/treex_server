@@ -34,4 +34,17 @@ interface UserMapper {
     """)
     fun getUserByName(name: String): User
 
+    @Update("""
+        UPDATE  login_user
+        SET phone = #{phone}
+        WHERE name = #{name}
+    """)
+    fun updateUserPhone(name:String,phone:String)
+
+    @Update("""
+        UPDATE login_user
+        SET email = #{email}
+        WHERE name =#{name}
+    """)
+    fun updateUserEmail(name:String,email:String)
 }

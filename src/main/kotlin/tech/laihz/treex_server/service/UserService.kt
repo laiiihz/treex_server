@@ -25,4 +25,12 @@ class UserService {
         return userMapper.updatePassword(name,password)
     }
 
+    fun updateUserPhone(name:String,phone:String){
+        return userMapper.updateUserPhone(name,phone)
+    }
+
+    fun updateUserEmail(name:String,email:String){
+        return userMapper.updateUserEmail(name,email)
+    }
+
 }
