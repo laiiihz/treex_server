@@ -18,7 +18,7 @@ import kotlin.time.milliseconds
 @RestController
 @RequestMapping("/api")
 class TestController {
-    val logger = LoggerFactory.getLogger(TestController::class.java)
+    val logger = LoggerFactory.getLogger(TestController::class.java) 
     @GetMapping("test")
     fun testMapping(): String {
         return "TEST SUCCESS"

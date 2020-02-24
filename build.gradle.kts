@@ -13,6 +13,19 @@ version = "0.0.1-SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_11
 
 repositories {
+    maven {
+        setUrl("https://maven.aliyun.com/repository/spring/")
+    }
+    maven {
+        setUrl("http://maven.aliyun.com/nexus/content/groups/public/")
+    }
+    maven {
+        setUrl("https://maven.aliyun.com/repository/jcenter")
+    }
+    maven {
+        setUrl("https://maven.aliyun.com/repository/spring-plugin")
+    }
+    mavenLocal()
     mavenCentral()
 }
 

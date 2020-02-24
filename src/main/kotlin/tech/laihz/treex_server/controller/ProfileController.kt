@@ -7,9 +7,15 @@ import org.springframework.core.io.UrlResource
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.multipart.MultipartFile
 import tech.laihz.treex_server.service.UserService
+import tech.laihz.treex_server.utils.PathUtil
 import tech.laihz.treex_server.utils.R
+import tech.laihz.treex_server.utils.ResultUtil
+import tech.laihz.treex_server.utils.UUIDUtil
 import java.io.File
+import java.nio.file.Files
+import java.nio.file.StandardCopyOption
 
 @RestController
 @RequestMapping("/api/treex")
@@ -26,7 +32,7 @@ class ProfileController {
      * @apiHeader {String} authorization token
      */
     @GetMapping("profile")
-    fun profileMapping(@RequestAttribute("name") name:String): R {
+    fun profileMapping(@RequestAttribute("name") name: String): R {
         val user = userService.getUserByName(name)
         return R.userGen(user)
     }
@@ -38,11 +44,36 @@ class ProfileController {
      * @apiHeader {String} authorization token
      */
     @GetMapping("profile/avatar")
-    fun avatarMapping(): ResponseEntity<UrlResource> {
+    fun avatarMapping(@RequestAttribute("name") name: String): ResponseEntity<UrlResource> {
+        val avatar = userService.getAvatarByName(name)
         return ResponseEntity
                 .ok()
-                .contentType(MediaType.IMAGE_JPEG)
-                .body(UrlResource(File("FILESYSTEM/AVATAR/1.jpg").toURI()))
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(UrlResource(File("FILESYSTEM/AVATAR/${avatar}").toURI()))
+    }
+
+    /**
+     * @api {post} /treex/profile/avatar 设置头像(文件)
+     * @apiVersion 1.0.0
+     * @apiGroup Profile
+     * @apiHeader {String} authorization token
+     * @apiParam {MultipartFile} file
+     */
+
+    @PostMapping("profile/avatar")
+    fun setAvatarMapping(
+            @RequestAttribute("name") name: String,
+            @RequestParam("file") file: MultipartFile,
+            @RequestParam("type") type: String
+    ): R {
+        val avatarRootPath = PathUtil.avatarPrefix()
+        val avatarName = UUIDUtil().UUID + "." + type
+        userService.updateUserAvatar(name,avatarName)
+        Files.copy(
+                file.inputStream,
+                File(avatarRootPath + avatarName).toPath(),
+                StandardCopyOption.REPLACE_EXISTING)
+        return ResultUtil.successResult()
     }
 
     /**
@@ -80,7 +111,7 @@ class ProfileController {
             @RequestParam("phone") phone: String,
             @RequestAttribute("name") name: String
     ): R {
-        userService.updateUserPhone(name,phone)
+        userService.updateUserPhone(name, phone)
         return R.successResult()
     }
 
@@ -95,8 +126,8 @@ class ProfileController {
     fun emailMapping(
             @RequestParam("email") email: String,
             @RequestAttribute("name") name: String
-    ):R{
-        userService.updateUserEmail(name,email)
+    ): R {
+        userService.updateUserEmail(name, email)
         return R.successResult()
     }
 }

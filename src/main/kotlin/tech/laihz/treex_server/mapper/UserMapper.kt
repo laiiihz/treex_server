@@ -47,4 +47,18 @@ interface UserMapper {
         WHERE name =#{name}
     """)
     fun updateUserEmail(name:String,email:String)
+
+    @Update("""
+        UPDATE login_user
+        SET avatar = #{avatar}
+        WHERE name = #{name}
+    """)
+    fun updateUserAvatar(name:String,avatar:String)
+
+    @Select("""
+        SELECT avatar
+        FROM login_user
+        WHERE name = #{name}
+    """)
+    fun getAvatarByName(name:String):String
 }
