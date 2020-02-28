@@ -135,21 +135,6 @@ class FileController {
         return R.successResult()
     }
 
-    /** @api {get} /treex/share/download 下载共享文件
-     * @apiVersion 1.0.0
-     * @apiName download shared file
-     * @apiParam {String} path
-     * @apiGroup Files
-     *
-     */
-    @GetMapping("share/download")
-    fun shareDownloadMapping(@RequestParam("path") path: String): ResponseEntity<UrlResource> {
-        return ResponseEntity
-                .ok()
-                .contentType(MediaType.parseMediaType("application/octet-stream"))
-                .body(UrlResource(File("FILESYSTEM/SHARE/${path}").toURI()))
-    }
-
     /**
      * @api {get} /treex/file/download 下载私有文件
      * @apiVersion 1.0.0
@@ -161,12 +146,14 @@ class FileController {
     @GetMapping("file/download")
     fun privateDownloadMapping(
             @RequestAttribute("name") name: String,
-            @RequestParam("path") path: String
+            @RequestParam("path") path: String,
+            @RequestParam("share") share: Boolean
     ): ResponseEntity<UrlResource> {
+        val filePath = if (share) PathUtil.sharedPrefix() else PathUtil.prefix(name)
         return ResponseEntity
                 .ok()
                 .contentType(MediaType.parseMediaType("application/octet-stream"))
-                .body(UrlResource(File("FILESYSTEM/FILES/${name}/${path}").toURI()))
+                .body(UrlResource(File("${filePath}${path}").toURI()))
     }
 
     /**

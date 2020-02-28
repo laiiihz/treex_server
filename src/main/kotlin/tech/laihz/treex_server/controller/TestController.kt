@@ -29,6 +29,11 @@ class TestController {
         return R.successResult()
     }
 
+    @GetMapping("treex/checkConnection")
+    fun checkUserConnection():R{
+        return R.successResult()
+    }
+
     @GetMapping("testFile")
     fun testFileMapping(@RequestParam("name") name:String):ResponseEntity<UrlResource>{
         return ResponseEntity

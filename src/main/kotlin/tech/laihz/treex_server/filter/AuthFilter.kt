@@ -1,9 +1,11 @@
 package tech.laihz.treex_server.filter
 
 import com.alibaba.fastjson.JSON
+import jdk.jfr.ContentType
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.redis.core.StringRedisTemplate
+import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
 import tech.laihz.treex_server.utils.R
 import tech.laihz.treex_server.utils.TokenUtil
@@ -33,12 +35,14 @@ class AuthFilter : Filter {
         }else{
             if(token == null){
                 val r = R.noPermission()
+                res.addHeader("Content-Type",MediaType.APPLICATION_JSON.toString())
                 res.writer.write(JSON.toJSONString(r))
                 return
             }
             val nameInJedis:String? = stringRedisTemplate.opsForValue().get(token)
             if(nameInJedis==null){
                 val r = R.noPermission()
+                res.addHeader("Content-Type",MediaType.APPLICATION_JSON.toString())
                 res.writer.write(JSON.toJSONString(r))
                 return
             }else{

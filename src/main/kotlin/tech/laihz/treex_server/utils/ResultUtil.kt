@@ -119,31 +119,31 @@ class ResultUtil : HashMap<String, Any>() {
             return r
         }
 
-        fun recycleBinResult(path:String):R{
-            val r= R()
-            r["status"]= 200
+        fun recycleBinResult(path: String): R {
+            val r = R()
+            r["status"] = 200
             val recycleList = ArrayList<File>()
-            var count =0
+            var count = 0
             Files.walk(File(path).toPath()).forEach {
                 count++
-                if(count!=1)//remove the top
-                recycleList.add(it.toFile())
+                if (count != 1)//remove the top
+                    recycleList.add(it.toFile())
             }
-            r["recycleFiles"] = recycleBinList(files =recycleList,prefix = path)
+            r["recycleFiles"] = recycleBinList(files = recycleList, prefix = path)
             return r
         }
 
-        fun searchResult(files:ArrayList<File>,prefix: String):R{
+        fun searchResult(files: ArrayList<File>, prefix: String): R {
             val r = R()
-            val rList =ArrayList<R>()
+            val rList = ArrayList<R>()
             r["status"] = 200
-            for (item in files){
+            for (item in files) {
                 val rSingle = R()
                 rSingle["name"] = item.name
                 rSingle["path"] = File(item.path.replace(prefix, "./")).invariantSeparatorsPath
                 rSingle["isDir"] = item.isDirectory
                 rSingle["date"] = item.lastModified()
-                if(!item.isDirectory){
+                if (!item.isDirectory) {
                     rSingle["length"] = item.length()
                 }
                 rList.add(rSingle)
@@ -179,12 +179,13 @@ class ResultUtil : HashMap<String, Any>() {
             }
             return r
         }
+
         private fun recycleBinList(files: ArrayList<File>, prefix: String): List<R> {
             val r = ArrayList<R>()
             for (file in files) {
                 val rSingle = R()
                 rSingle["name"] = file.name
-                rSingle["path"] = File(file.path.replace(prefix,"./")).invariantSeparatorsPath
+                rSingle["path"] = File(file.path.replace(prefix, "./")).invariantSeparatorsPath
                 r.add(rSingle)
             }
             return r
@@ -230,12 +231,20 @@ class ResultUtil : HashMap<String, Any>() {
             return r
         }
 
-        fun typedResult(photo: Int, video: Int, music: Int,docs:Int ):R {
-            val r= R()
+        fun typedResult(photo: Int, video: Int, music: Int, docs: Int): R {
+            val r = R()
             r["photo"] = photo
             r["video"] = video
             r["music"] = music
             r["docs"] = docs
+            r["status"] = 200
+            return r
+        }
+
+        fun spaceResult(used: Long, all:Long): R {
+            val r = R()
+            r["used"] = used
+            r["all"] = all
             r["status"] = 200
             return r
         }

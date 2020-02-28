@@ -68,7 +68,7 @@ class ProfileController {
     ): R {
         val avatarRootPath = PathUtil.avatarPrefix()
         val avatarName = UUIDUtil().UUID + "." + type
-        userService.updateUserAvatar(name,avatarName)
+        userService.updateUserAvatar(name, avatarName)
         Files.copy(
                 file.inputStream,
                 File(avatarRootPath + avatarName).toPath(),
@@ -129,5 +129,18 @@ class ProfileController {
     ): R {
         userService.updateUserEmail(name, email)
         return R.successResult()
+    }
+
+    /**
+     * @api {get} /treex/profile/space 获取空间
+     * @apiVersion 1.0.0
+     * @apiGroup Profile
+     * @apiHeader {String} authorization token
+     */
+    @GetMapping("profile/space")
+    fun getSpaceMapping(@RequestAttribute("name") name: String): R {
+        //TODO get space
+        //every delete and upload file change the mysql database's data
+        return R.spaceResult(100 * 1024 * 1024, 10 * 1024 * 1024 * 1024.toLong())
     }
 }
