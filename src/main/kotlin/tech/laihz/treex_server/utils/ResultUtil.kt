@@ -217,6 +217,23 @@ class ResultUtil : HashMap<String, Any>() {
             return r
         }
 
+        fun friendList(result:ArrayList<String>):R{
+            val r = R()
+            r["tag"] = "friends"
+            r["friends"] = friendsBuild(result)
+            return r
+        }
+
+        private fun friendsBuild(result:ArrayList<String>):List<R>{
+            val r = ArrayList<R>()
+            result.forEach {
+                val singleR = R()
+                singleR["name"] = it
+                r.add(singleR)
+            }
+            return r
+        }
+
         fun successResult(): R {
             val r = R()
             r["status"] = 200

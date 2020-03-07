@@ -36,6 +36,7 @@ dependencies {
     implementation("org.mybatis.spring.boot:mybatis-spring-boot-starter:2.1.1")
     implementation("mysql:mysql-connector-java")
     implementation("com.alibaba:fastjson:1.2.62")
+    implementation("com.alibaba:druid-spring-boot-starter:1.1.20")
     implementation("org.springframework.boot:spring-boot-starter-undertow")
     implementation("org.springframework.boot:spring-boot-starter-websocket"){
         exclude(group="org.springframework.boot" , module = "spring-boot-starter-tomcat")
