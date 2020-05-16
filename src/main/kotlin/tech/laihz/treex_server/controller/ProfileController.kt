@@ -140,7 +140,13 @@ class ProfileController {
     @GetMapping("profile/space")
     fun getSpaceMapping(@RequestAttribute("name") name: String): R {
         //TODO get space
-        //every delete and upload file change the mysql database's data
-        return R.spaceResult(100 * 1024 * 1024, 10 * 1024 * 1024 * 1024.toLong())
+        val prefix = PathUtil.prefix(name)
+        var size:Long = 0
+        Files.walk(File(prefix).toPath()).forEach {
+            val tempFile = it.toFile()
+            size+=tempFile.length()
+        }
+        //default 10GB
+        return R.spaceResult(size, 10 * 1024 * 1024 * 1024.toLong())
     }
 }
