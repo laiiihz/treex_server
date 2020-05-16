@@ -120,10 +120,11 @@ class FileController {
     }
 
     /**
-     * @api {delete} /treex/share 删除公共文件
+     * @api {delete} /treex/share 删除公共文件(包含文件夹)
      * @apiVersion 1.0.0
      * @apiName delete shared file
      * @apiGroup Files
+     * @apiParam {String} path 文件路径
      */
     @DeleteMapping("share")
     fun deleteShareMapping(@RequestParam("path") path: String): R {
@@ -141,6 +142,7 @@ class FileController {
      * @apiName down private file
      * @apiGroup Files
      * @apiParam {String} path file
+     * @apiParam {Boolean} share 
      * @apiHeader {String} authorization token
      */
     @GetMapping("file/download")
@@ -194,6 +196,7 @@ class FileController {
      * @apiHeader {String} Authorization token
      * @apiParam {String} file 需要修改的文件路径
      * @apiParam {String} new 新文件名
+     * @apiParam {Bool} share 共享文件夹
      * @apiSuccessExample {json} SUCCESS
      * {
      *  "result": {
@@ -361,6 +364,7 @@ class FileController {
      * @apiGroup Files
      * @apiHeader {String} authorization token
      * @apiParam {String} query
+     * @apiParam {bool} share
      */
     @GetMapping("file/search")
     fun searchMapping(

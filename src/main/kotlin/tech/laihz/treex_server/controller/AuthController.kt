@@ -93,19 +93,27 @@ class AuthController {
      *  },
      *  "status":200
      * }
-     * @apiSuccessExample {json} HAVE_USER
-     * {
-     *  "signupResult":{
-     *      "code":1,
-     *      "name":"HAVE_USER"
-     *  },
-     *  "status":200
-     * }
      * @apiSuccessExample {json} PASSWORD_NULL
      * {
      *  "signupResult":{
-     *      "code":3,
+     *      "code":1,
      *      "name":"PASSWORD_NULL"
+     *  },
+     *  "status":200
+     * }
+     * @apiSuccessExample {json} FAIL
+     * {
+     *  "signupResult":{
+     *      "code":2,
+     *      "name":"FAIL"
+     *  },
+     *  "status":200
+     * }
+     * @apiSuccessExample {json} HAVE_USER
+     * {
+     *  "signupResult":{
+     *      "code":3,
+     *      "name":"HAVE_USER"
      *  },
      *  "status":200
      * }
